@@ -5,15 +5,15 @@ const bcrypt = require('bcrypt');
 
 function usuarioRoutes(db) {
 
-    
+
     router.post('/usuarios', async (req, res) => {
         const { nome_usuario, email_usuario, senha_usuario, id_permissao } = req.body;
 
         try {
-            
+
             const hashedPassword = await bcrypt.hash(senha_usuario, 10);
 
-            
+
             db.query('INSERT INTO Usuario (nome_usuario, email_usuario, senha_usuario, id_permissao) VALUES (?, ?, ?, ?)',
                 [nome_usuario, email_usuario, hashedPassword, id_permissao],
                 (err, result) => {
@@ -84,6 +84,30 @@ function usuarioRoutes(db) {
         } catch (err) {
             console.error('Erro ao hashear a senha:', err);
             res.status(500).send('Erro ao atualizar usuário');
+        }
+    });
+
+    router.put('/usuario/trocarsenha', async (req, res) => {
+        const { email_usuario, nova_senha } = req.body;
+    
+        try {
+            // Verifique se o usuário existe no banco de dados
+            const usuario = await db.query('SELECT * FROM Usuario WHERE email_usuario = ?', [email_usuario]);
+    
+            if (usuario.length === 0) {
+                return res.status(404).send('Usuário não encontrado');
+            }
+    
+            // Hash da nova senha
+            const hashedPassword = await bcrypt.hash(nova_senha, 10);
+    
+            // Atualize a senha no banco de dados
+            await db.query('UPDATE Usuario SET senha_usuario = ? WHERE email_usuario = ?', [hashedPassword, email_usuario]);
+    
+            res.status(200).send('Senha atualizada com sucesso');
+        } catch (error) {
+            console.error('Erro ao trocar a senha:', error);
+            res.status(500).send('Erro ao trocar a senha');
         }
     });
 
