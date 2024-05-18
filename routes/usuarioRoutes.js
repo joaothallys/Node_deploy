@@ -87,29 +87,49 @@ function usuarioRoutes(db) {
         }
     });
 
-    router.put('/usuario/trocarsenha', async (req, res) => {
+    router.put('/usuario/senha', async (req, res) => {
         const { email_usuario, nova_senha } = req.body;
     
         try {
-            // Verifique se o usuário existe no banco de dados
-            const usuario = await db.query('SELECT * FROM Usuario WHERE email_usuario = ?', [email_usuario]);
-    
-            if (usuario.length === 0) {
-                return res.status(404).send('Usuário não encontrado');
-            }
-    
             // Hash da nova senha
             const hashedPassword = await bcrypt.hash(nova_senha, 10);
     
-            // Atualize a senha no banco de dados
-            await db.query('UPDATE Usuario SET senha_usuario = ? WHERE email_usuario = ?', [hashedPassword, email_usuario]);
+            // Pesquisa o ID do usuário pelo e-mail
+            db.query('SELECT id_usuario FROM Usuario WHERE email_usuario=?', 
+                [email_usuario],
+                async (err, rows) => {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).send('Erro ao buscar usuário');
+                    }
+                    if (rows.length === 0) {
+                        return res.status(404).send('Usuário não encontrado');
+                    }
     
-            res.status(200).send('Senha atualizada com sucesso');
-        } catch (error) {
-            console.error('Erro ao trocar a senha:', error);
+                    const id_usuario = rows[0].id_usuario;
+    
+                    // Atualiza a senha no banco de dados usando o ID do usuário
+                    db.query('UPDATE Usuario SET senha_usuario=? WHERE id_usuario=?',
+                        [hashedPassword, id_usuario],
+                        (err, result) => {
+                            if (err) {
+                                console.log(err);
+                                return res.status(500).send('Erro ao trocar a senha');
+                            }
+                            if (result.affectedRows === 0) {
+                                return res.status(404).send('Usuário não encontrado');
+                            }
+                            res.send('Senha trocada com sucesso');
+                        }
+                    );
+                }
+            );
+        } catch (err) {
+            console.error('Erro ao hashear a senha:', err);
             res.status(500).send('Erro ao trocar a senha');
         }
     });
+    
 
     // Deleta um usuário pelo ID
     router.delete('/usuarios/:id', (req, res) => {
