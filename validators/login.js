@@ -32,7 +32,10 @@ function login(db) {
                 }
 
                 // Autenticação bem-sucedida
-                res.send('Login bem-sucedido');
+                res.json({
+                    mensagem: 'Login bem-sucedido',
+                    nome_usuario: usuario.nome_usuario
+                });
             } catch (error) {
                 console.log(error);
                 res.status(500).send('Erro interno do servidor');
