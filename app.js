@@ -39,7 +39,7 @@ app.use(express.json());
 // Configuração do banco de dados MySQL
 const db = mysql.createConnection({
     host: "monorail.proxy.rlwy.net",
-    port: 3306,
+    port: 16006,
     user: 'root',
     password: 'ONMPZYNyUOTANAfvHLtIJyRVhYsVBQkI',
     database: 'railway'
