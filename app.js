@@ -23,7 +23,7 @@ const login = require('./validators/login.js');
 
 const app = express();
 
-
+// Configurar o CORS para permitir acesso de todas as origens
 const corsOptions = {
     origin: '*', // Permitir todas as origens
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
