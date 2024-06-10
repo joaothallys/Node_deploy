@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 // Importar as rotas
 const motoristaRoutes = require('./routes/motoristaRoutes.js');

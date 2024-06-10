@@ -14,7 +14,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "3000:3000"
+      - "3306:3306"
     depends_on:
       - db
     links:
@@ -22,5 +22,5 @@ services:
     environment:
       DB_HOST: db
       DB_USER: root
-      DB_PASSWORD: admin
-      DB_NAME: root
+      DB_PASSWORD: ONMPZYNyUOTANAfvHLtIJyRVhYsVBQkI
+      DB_NAME: railway
