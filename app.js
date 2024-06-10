@@ -23,7 +23,7 @@ const login = require('./validators/login.js');
 
 const app = express();
 
-// Configurar o CORS para permitir acesso de todas as origens
+
 const corsOptions = {
     origin: '*', // Permitir todas as origens
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -39,9 +39,9 @@ app.use(express.json());
 // Configuração do banco de dados MySQL
 const db = mysql.createConnection({
     host: "monorail.proxy.rlwy.net",
-    port: 19967,
+    port: 3306,
     user: 'root',
-    password: 'fiGARhOKCvylUtemfLFSvzIIPlMsLauD',
+    password: 'ONMPZYNyUOTANAfvHLtIJyRVhYsVBQkI',
     database: 'railway'
 });
 
