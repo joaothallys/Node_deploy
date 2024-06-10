@@ -4,7 +4,7 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: fiGARhOKCvylUtemfLFSvzIIPlMsLauD
+      MYSQL_ROOT_PASSWORD: ONMPZYNyUOTANAfvHLtIJyRVhYsVBQkI
       MYSQL_DATABASE: railway
     ports:
       - "16006:16006"
@@ -22,5 +22,5 @@ services:
     environment:
       DB_HOST: db
       DB_USER: root
-      DB_PASSWORD: ONMPZYNyUOTANAfvHLtIJyRVhYsVBQkI
+      DB_PASSWORD: admin
       DB_NAME: root
