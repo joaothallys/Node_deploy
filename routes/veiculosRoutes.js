@@ -62,7 +62,23 @@ function veiculosRoutes(db) {
             res.send('Veículo excluído com sucesso');
         });
     });
-    return router;
 
+    // Rota para buscar veículo pela placa
+    router.get('/veiculos/placa/:placa', (req, res) => {
+        const placa_veiculo = req.params.placa;
+        db.query('SELECT * FROM Veiculo WHERE placa_veiculo = ?', [placa_veiculo], (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send('Erro ao buscar veículo pela placa');
+            }
+            if (result.length === 0) {
+                return res.status(404).send('Veículo não encontrado');
+            }
+            res.json(result[0]);
+        });
+    });
+
+    return router;
 }
+
 module.exports = veiculosRoutes;
