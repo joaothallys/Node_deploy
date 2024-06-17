@@ -80,5 +80,4 @@ function veiculosRoutes(db) {
 
     return router;
 }
-
 module.exports = veiculosRoutes;

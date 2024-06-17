@@ -22,9 +22,9 @@ function rotasRoutes(db) {
             return res.status(400).send('Erro ao criar rota: Corpo da solicitação inválido');
         }
 
-        const { destino_rota, data_partida_rota, data_chegada_rota, id_veiculo } = req.body;
-        db.query('INSERT INTO Rota (destino_rota, data_partida_rota, data_chegada_rota, id_veiculo) VALUES (?, ?, ?, ?)',
-            [destino_rota, data_partida_rota, data_chegada_rota, id_veiculo],
+        const { destino_rota, data_partida_rota, data_chegada_rota, data_prevista, quantidade_volume, id_veiculo } = req.body;
+        db.query('INSERT INTO Rota (destino_rota, data_partida_rota, data_chegada_rota, data_prevista, quantidade_volume, id_veiculo) VALUES (?, ?, ?, ?, ?, ?)',
+            [destino_rota, data_partida_rota, data_chegada_rota, data_prevista, quantidade_volume, id_veiculo],
             (err, result) => {
                 if (err) {
                     console.log(err);
@@ -37,9 +37,9 @@ function rotasRoutes(db) {
     // Rota para atualizar uma rota existente
     router.put('/rotas/:id', (req, res) => {
         const id_rota = req.params.id;
-        const { destino_rota, data_partida_rota, data_chegada_rota, id_veiculo } = req.body;
-        db.query('UPDATE Rota SET destino_rota=?, data_partida_rota=?, data_chegada_rota=?, id_veiculo=? WHERE id_rota=?',
-            [destino_rota, data_partida_rota, data_chegada_rota, id_veiculo, id_rota],
+        const { destino_rota, data_partida_rota, data_chegada_rota, data_prevista, quantidade_volume, id_veiculo } = req.body;
+        db.query('UPDATE Rota SET destino_rota=?, data_partida_rota=?, data_chegada_rota=?, data_prevista=?, quantidade_volume=?, id_veiculo=? WHERE id_rota=?',
+            [destino_rota, data_partida_rota, data_chegada_rota, data_prevista, quantidade_volume, id_veiculo, id_rota],
             (err, result) => {
                 if (err) {
                     console.log(err);

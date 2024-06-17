@@ -27,7 +27,7 @@ function viagemRoutes(db) {
             }
 
             // Insere os dados no banco de dados
-            db.query('INSERT INTO viagem (data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista) VALUES (?, ?, ?, ?, ?, ?)',
+            db.query('INSERT INTO Viagem (data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista) VALUES (?, ?, ?, ?, ?, ?)',
                 [data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista],
                 (err, result) => {
                     if (err) {
@@ -42,7 +42,7 @@ function viagemRoutes(db) {
     // Rota para buscar uma viagem por ID
     router.get('/viagens/:id', (req, res) => {
         const id_viagem = req.params.id;
-        db.query('SELECT * FROM viagem WHERE id_viagem = ?', [id_viagem], (err, results) => {
+        db.query('SELECT * FROM Viagem WHERE id_viagem = ?', [id_viagem], (err, results) => {
             if (err) {
                 console.log(err);
                 return res.status(500).send('Erro ao buscar viagem por ID');
@@ -53,7 +53,7 @@ function viagemRoutes(db) {
 
     // Rota para buscar todas as viagens
     router.get('/viagens', (req, res) => {
-        db.query('SELECT * FROM viagem', (err, results) => {
+        db.query('SELECT * FROM Viagem', (err, results) => {
             if (err) {
                 console.log(err);
                 return res.status(500).send('Erro ao buscar viagens');
@@ -66,7 +66,7 @@ function viagemRoutes(db) {
     router.put('/viagens/:id', (req, res) => {
         const id_viagem = req.params.id;
         const { data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista } = req.body;
-        db.query('UPDATE viagem SET data_inicio_viagem=?, data_fim_viagem=?, destino_viagem=?, id_rota=?, id_veiculo=?, id_motorista=? WHERE id_viagem=?',
+        db.query('UPDATE Viagem SET data_inicio_viagem=?, data_fim_viagem=?, destino_viagem=?, id_rota=?, id_veiculo=?, id_motorista=? WHERE id_viagem=?',
             [data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista, id_viagem],
             (err, result) => {
                 if (err) {
