@@ -6,29 +6,37 @@ function viagemRoutes(db) {
 
     // Rota para criar uma nova viagem
     router.post('/viagens', (req, res) => {
-        const { data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista } = req.body;
+        const { primeira_parada, data_prevista_1, quantidade_volume, data_real_1, segunda_parada, data_prevista_2, data_real_2, id_rota, id_veiculo, id_motorista } = req.body;
 
         // Verifica se todos os atributos necessários estão presentes na solicitação
-        if (!data_inicio_viagem || !data_fim_viagem || !destino_viagem || !id_rota || !id_veiculo || !id_motorista) {
+        if (!primeira_parada || !data_prevista_1 || !quantidade_volume || !data_real_1 || !segunda_parada || !data_prevista_2 || !data_real_2 || !id_rota || !id_veiculo || !id_motorista) {
             return res.status(400).send('Erro ao criar viagem: Todos os atributos devem ser fornecidos.');
         }
 
-        // Verifica se os IDs de rota, veículo e motorista existem nas tabelas correspondentes
-        const checkExistenceQuery = 'SELECT COUNT(*) AS count FROM rota WHERE id_rota = ?; SELECT COUNT(*) AS count FROM veiculo WHERE id_veiculo = ?; SELECT COUNT(*) AS count FROM motorista WHERE id_motorista = ?';
-        db.query(checkExistenceQuery, [id_rota, id_veiculo, id_motorista], (err, results) => {
-            if (err) {
-                console.log(err);
-                return res.status(500).send('Erro interno do servidor ao verificar a existência dos IDs');
-            }
+        // Função para verificar a existência de um ID em uma tabela
+        const checkExistence = (table, column, value) => {
+            return new Promise((resolve, reject) => {
+                db.query(`SELECT COUNT(*) AS count FROM ${table} WHERE ${column} = ?`, [value], (err, results) => {
+                    if (err) return reject(err);
+                    resolve(results[0].count > 0);
+                });
+            });
+        };
 
-            // Verifica se algum dos IDs não existe nas tabelas correspondentes
-            if (results[0][0].count === 0 || results[1][0].count === 0 || results[2][0].count === 0) {
+        // Verifica se os IDs de rota, veículo e motorista existem nas tabelas correspondentes
+        Promise.all([
+            checkExistence('Rota', 'id_rota', id_rota),
+            checkExistence('Veiculo', 'id_veiculo', id_veiculo),
+            checkExistence('Motorista', 'id_motorista', id_motorista)
+        ])
+        .then(([rotaExists, veiculoExists, motoristaExists]) => {
+            if (!rotaExists || !veiculoExists || !motoristaExists) {
                 return res.status(400).send('Erro ao criar viagem: Algum dos IDs fornecidos não existe.');
             }
 
             // Insere os dados no banco de dados
-            db.query('INSERT INTO Viagem (data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista) VALUES (?, ?, ?, ?, ?, ?)',
-                [data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista],
+            db.query('INSERT INTO Viagem (primeira_parada, data_prevista_1, quantidade_volume, data_real_1, segunda_parada, data_prevista_2, data_real_2, id_rota, id_veiculo, id_motorista) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [primeira_parada, data_prevista_1, quantidade_volume, data_real_1, segunda_parada, data_prevista_2, data_real_2, id_rota, id_veiculo, id_motorista],
                 (err, result) => {
                     if (err) {
                         console.log(err);
@@ -36,6 +44,10 @@ function viagemRoutes(db) {
                     }
                     res.send('Viagem criada com sucesso');
                 });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('Erro interno do servidor ao verificar a existência dos IDs');
         });
     });
 
@@ -65,9 +77,10 @@ function viagemRoutes(db) {
     // Rota para atualizar uma viagem existente
     router.put('/viagens/:id', (req, res) => {
         const id_viagem = req.params.id;
-        const { data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista } = req.body;
-        db.query('UPDATE Viagem SET data_inicio_viagem=?, data_fim_viagem=?, destino_viagem=?, id_rota=?, id_veiculo=?, id_motorista=? WHERE id_viagem=?',
-            [data_inicio_viagem, data_fim_viagem, destino_viagem, id_rota, id_veiculo, id_motorista, id_viagem],
+        const { primeira_parada, data_prevista_1, quantidade_volume, data_real_1, segunda_parada, data_prevista_2, data_real_2, id_rota, id_veiculo, id_motorista } = req.body;
+
+        db.query('UPDATE Viagem SET primeira_parada=?, data_prevista_1=?, quantidade_volume=?, data_real_1=?, segunda_parada=?, data_prevista_2=?, data_real_2=?, id_rota=?, id_veiculo=?, id_motorista=? WHERE id_viagem=?',
+            [primeira_parada, data_prevista_1, quantidade_volume, data_real_1, segunda_parada, data_prevista_2, data_real_2, id_rota, id_veiculo, id_motorista, id_viagem],
             (err, result) => {
                 if (err) {
                     console.log(err);
@@ -76,6 +89,20 @@ function viagemRoutes(db) {
                 res.send('Viagem atualizada com sucesso');
             });
     });
+
+    // Rota para excluir uma viagem
+    router.delete('/viagens/:id', (req, res) => {
+        const id_viagem = req.params.id;
+        db.query('DELETE FROM Viagem WHERE id_viagem = ?', [id_viagem], (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send('Erro ao excluir viagem');
+            }
+            res.send('Viagem excluída com sucesso');
+        });
+    });
+
     return router;
 }
+
 module.exports = viagemRoutes;
