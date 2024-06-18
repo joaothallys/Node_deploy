@@ -56,7 +56,7 @@ function motoristaRoutes(db) {
     });
 
     // Rota para obter motorista por nome
-    router.get('/motoristas/:nome', (req, res) => {
+    router.get('/motoristas/nome/:nome', (req, res) => {
         const nome_motorista = req.params.nome;
         db.query('SELECT * FROM Motorista WHERE nome_motorista = ?', [nome_motorista], (err, results) => {
             if (err) {
@@ -64,6 +64,21 @@ function motoristaRoutes(db) {
                 return res.status(500).send('Erro ao buscar motorista por nome');
             }
             res.json(results);
+        });
+    });
+
+    // Rota para obter motorista por ID
+    router.get('/motoristas/id/:id', (req, res) => {
+        const id_motorista = req.params.id;
+        db.query('SELECT * FROM Motorista WHERE id_motorista = ?', [id_motorista], (err, results) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send('Erro ao buscar motorista por ID');
+            }
+            if (results.length === 0) {
+                return res.status(404).send('Motorista não encontrado');
+            }
+            res.json(results[0]);
         });
     });
 
