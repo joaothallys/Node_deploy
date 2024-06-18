@@ -20,6 +20,7 @@ const pedidoRoutes = require('./routes/pedidoRoutes.js');
 const pedido_produtoRoutes = require('./routes/pedido_produtoRoutes.js');
 const permissaoRoutes = require('./routes/permissaoRoutes.js');
 const alertaConducaoRoutes = require('./routes/alertaConducaoRoutes.js');
+const controleRotasRoutes = require('./routes/controleRotasRoutes.js');
 const historicoConducaoRoutes = require('./routes/historicoConducaoRoutes.js');
 
 const login = require('./validators/login.js');
@@ -74,6 +75,7 @@ app.use('/', pedido_produtoRoutes(db));
 app.use('/', permissaoRoutes(db));
 app.use('/', alertaConducaoRoutes(db));
 app.use('/', historicoConducaoRoutes(db));
+app.use('/', controleRotasRoutes(db));
 app.use('/', login(db));
 
 // Iniciar o servidor
